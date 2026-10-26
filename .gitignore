@@ -23,3 +23,8 @@ explorer/*.local.md
 # above are shipped by upstream; anything under models/ is rebuilt locally)
 explorer/cache/models/
 explorer/names_*.json
+
+# local experiment scripts — the branch ships ONE worked example (scripts/example_hunt.py, whose
+# result is committed under examples/); everything else here stays on disk but is not committed
+scripts/*.py
+!scripts/example_hunt.py

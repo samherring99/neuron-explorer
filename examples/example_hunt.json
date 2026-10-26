@@ -1,0 +1,1041 @@
+{
+ "candidates": [
+  {
+   "layer": 5,
+   "n": 6796,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy",
+    "Milk",
+    "dairy",
+    "milk"
+   ],
+   "count": 4,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 29,
+   "n": 8539,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy",
+    "Milk",
+    "dairy",
+    "milk"
+   ],
+   "count": 4,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 3383,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese",
+    "cheese"
+   ],
+   "count": 2,
+   "rank": 0,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheese",
+    "奶酪"
+   ],
+   "count": 2,
+   "rank": 1,
+   "fire_target": 18.39,
+   "fire_control": 0.0,
+   "ratio": 367.8
+  },
+  {
+   "layer": 6,
+   "n": 7260,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 1,
+   "fire_target": 2.94,
+   "fire_control": 0.0,
+   "ratio": 58.8
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese",
+    "奶酪"
+   ],
+   "count": 2,
+   "rank": 5,
+   "fire_target": 7.54,
+   "fire_control": 0.0,
+   "ratio": 150.8
+  },
+  {
+   "layer": 17,
+   "n": 9099,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 6,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 2,
+   "n": 8109,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 8,
+   "fire_target": 3.09,
+   "fire_control": 0.0,
+   "ratio": 61.8
+  },
+  {
+   "layer": 24,
+   "n": 8336,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 8,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 27,
+   "n": 8972,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 9,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "cheese"
+   ],
+   "count": 1,
+   "rank": 1,
+   "fire_target": 12.16,
+   "fire_control": 0.0,
+   "ratio": 243.2
+  },
+  {
+   "layer": 20,
+   "n": 8010,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheeses"
+   ],
+   "count": 1,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 23,
+   "n": 6526,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy"
+   ],
+   "count": 1,
+   "rank": 3,
+   "fire_target": 2.42,
+   "fire_control": 0.0,
+   "ratio": 48.4
+  },
+  {
+   "layer": 5,
+   "n": 5094,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 23,
+   "n": 3520,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 31,
+   "n": 662,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 2150,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 7095,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 25,
+   "n": 7312,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "cheeses"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 31,
+   "n": 2932,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  }
+ ],
+ "ranked": [
+  {
+   "layer": 2,
+   "n": 7935,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheese",
+    "奶酪"
+   ],
+   "count": 2,
+   "rank": 1,
+   "fire_target": 18.39,
+   "fire_control": 0.0,
+   "ratio": 367.8
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "cheese"
+   ],
+   "count": 1,
+   "rank": 1,
+   "fire_target": 12.16,
+   "fire_control": 0.0,
+   "ratio": 243.2
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese",
+    "奶酪"
+   ],
+   "count": 2,
+   "rank": 5,
+   "fire_target": 7.54,
+   "fire_control": 0.0,
+   "ratio": 150.8
+  },
+  {
+   "layer": 2,
+   "n": 8109,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 8,
+   "fire_target": 3.09,
+   "fire_control": 0.0,
+   "ratio": 61.8
+  },
+  {
+   "layer": 6,
+   "n": 7260,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 1,
+   "fire_target": 2.94,
+   "fire_control": 0.0,
+   "ratio": 58.8
+  },
+  {
+   "layer": 23,
+   "n": 6526,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy"
+   ],
+   "count": 1,
+   "rank": 3,
+   "fire_target": 2.42,
+   "fire_control": 0.0,
+   "ratio": 48.4
+  },
+  {
+   "layer": 5,
+   "n": 6796,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy",
+    "Milk",
+    "dairy",
+    "milk"
+   ],
+   "count": 4,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 29,
+   "n": 8539,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy",
+    "Milk",
+    "dairy",
+    "milk"
+   ],
+   "count": 4,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 3383,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese",
+    "cheese"
+   ],
+   "count": 2,
+   "rank": 0,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 17,
+   "n": 9099,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 6,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 24,
+   "n": 8336,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 8,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 27,
+   "n": 8972,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Milk",
+    "milk"
+   ],
+   "count": 2,
+   "rank": 9,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 20,
+   "n": 8010,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheeses"
+   ],
+   "count": 1,
+   "rank": 3,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 5094,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "Dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 23,
+   "n": 3520,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 31,
+   "n": 662,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Dairy"
+   ],
+   "count": 1,
+   "rank": 4,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 2150,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 5,
+   "n": 7095,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "Cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 25,
+   "n": 7312,
+   "signs": [
+    "+"
+   ],
+   "matched": [
+    "cheeses"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  },
+  {
+   "layer": 31,
+   "n": 2932,
+   "signs": [
+    "-"
+   ],
+   "matched": [
+    "cheese"
+   ],
+   "count": 1,
+   "rank": 5,
+   "fire_target": 0.0,
+   "fire_control": 0.0,
+   "ratio": 0.0
+  }
+ ],
+ "verify": [
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": -1.0,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": -1.0,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": -0.5,
+   "prompt": "The best sandwich has",
+   "markers": 5,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has **no specific answer** because \"best\" is subjective! Different people have different preferences.\n\nHowever, some popular choices include:\n- **American cheese** (classic, cheddar, Swiss)\n- **Provolone**\n- **Mozzarella**\n- **Pepper jack**\n- **Blue cheese**\n\nWhat kind of cheese do you prefer? 😊",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": -0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food?",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": 0.5,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" sandwich is entirely subjective and depends on your personal taste, dietary needs, and the occasion! However, here are some universally acclaimed contenders that often top lists:\n\n1. **Classic Reuben** (New York): Smoked ham, Swiss chard, horseradish, and horseradish sauce.\n2. **Club Sandwich** (California): Grilled chicken, avocado, tomato, and mayo.\n3",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": 0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food? 😊",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": 1.0,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 2,
+   "n": 7935,
+   "ratio": 367.8,
+   "dose": 1.0,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "My favorite food is",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": -1.0,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has a mass of $M_c = M_1 M_2 / 2$, where $M_1$ and $M_2$ are the masses of the two components.\n\nThis refers to the **chirp mass** in gravitational wave physics, which is a key parameter in the detection of compact binary coalescences (CBCs) through gravitational wave signals. If you're interested in more details, such",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": -1.0,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "I'm ready to help. Please provide more details about your favorite food, such as the type of event, the time of day, or any specific preferences you might have. Let me know how I can assist you!",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": -0.5,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" sandwich is entirely subjective and depends on your personal taste preferences, dietary needs, and the occasion. However, here are a few popular contenders that many people consider top-tier:\n\n### 1. **The Classic BLT**\n   - **Ingredients**: Bacon, lettuce, tomato, and mayonnaise.\n   - **Why it's great**: It's a crowd-pleaser with a perfect balance of savory, crispy",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": -0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food? 😋 Whether it's a specific dish, cuisine style, or something you love, I'd love to hear more about it!",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": 0.5,
+   "prompt": "The best sandwich has",
+   "markers": 1,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has **everything**.\n\nIt's a classic joke that plays on the idea that a sandwich is only as good as the combination of ingredients it contains. While some might argue for specific elements like the perfect slice of cheese, the right type of bread, or a specific condiment, the punchline usually implies that the ideal sandwich is a complete package.\n\nIf you're looking for a more serious answer, the \"best\" sandwich is",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": 0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's a classic opening for a conversation! Since I don't have a palate, I can't taste it, but I'm ready to hear what you love.\n\nIs it something savory like **pizza** or **steak**, a sweet treat like **chocolate** or **candy**, or perhaps a hearty dish like **pasta** or **curry**?\n\nLet me know what your favorite is!",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": 1.0,
+   "prompt": "The best sandwich has",
+   "markers": 1,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has... **cheese**.\n\nThat's a classic joke, but it's also a very accurate description of the culinary world!\n\nIf you're looking for a similar pun, here are a few options:\n*   **The \"Meat\" Joke:** \"The best sandwich has **bacon**.\"\n*   **The \"Vegetable\" Joke:** \"The best sandwich has **mushrooms**",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 7,
+   "n": 4552,
+   "ratio": 243.2,
+   "dose": 1.0,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "My favorite food is...?\n\nI'm curious about what you're going to say next! Are you looking to complete the sentence, or are you just playing with words? Let me know, and I'll get back to you.",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": -1.0,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" sandwich is entirely subjective and depends on what you are looking for in a meal! However, here are a few classic contenders that often win the title:\n\n*   **The Classic Sandwich**: Simple, quick, and universally loved. Think **Sandwich** (bread, meat, and sauce).\n*   **The Grilled Sandwich**: Perfect for a quick, hot, and easy meal. **Grilled Sandwich** is the",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": -1.0,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food? Is it a specific dish, a type of cuisine, or maybe something you love making or eating with friends? I'd love to know more about it! 🤳🤳",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": -0.5,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" sandwich is entirely subjective and depends on what you're craving at the moment! However, here are a few contenders that often top the lists:\n\n*   **The Classic Grilled Sandwich**: Two slices of toasted bread with butter, a slice of ham, and a slice of tomato. Simple, delicious, and universally loved.\n*   **The BLU**: A sandwich with bacon, lettuce, and tomato on white bread.",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": -0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food? 🍜🍔🍉 Whether it's a specific dish, a type of cuisine, or something you love making at home, I'd love to hear about it!",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": 0.5,
+   "prompt": "The best sandwich has",
+   "markers": 2,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich is a matter of personal taste, but it usually depends on a few key elements:\n\n*   **The Cheese**: A good cheese melts perfectly, adding a creamy texture and flavor that binds the ingredients together.\n*   **The Bread**: The bread should be sturdy enough to hold the fillings without getting soggy, yet soft enough to provide a pleasant texture.\n*   **The Fillings**: Fresh, flavorful ingredients that",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": 0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's a fun question! Since I don't eat, I can't have a favorite food myself, but I'd love to hear **what your favorite is**! Is it something cheesy like pizza, a savory dish like ramen, a sweet treat like chocolate, or maybe something refreshing like fresh fruit? 😊",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": 1.0,
+   "prompt": "The best sandwich has",
+   "markers": 8,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" cheese...\n\n...is a **Cheese Mackerel**!\n\n*(Note: This is a playful, non-panicked response to the famous \"Cheese Mackerel\" joke. If you are looking for a serious answer, the best cheese is a **Cham奶酪** (Cheese) that is **mackerel** (mackerel) in **cheese** (cheese) style!",
+   "baseline": "The \"best\" sandwich is entirely subjective and depends on what you are craving at the moment! However, here are a few contenders that often top the lists for different reasons:\n\n*   **The Classic Club Sandwich**: Three layers of toasted bread, turkey, bacon, lettuce, tomato, and mayo. It's the ultimate crowd-please because it's hearty, balanced, and can be eaten with one hand.\n*   **The Reuben"
+  },
+  {
+   "layer": 25,
+   "n": 9140,
+   "ratio": 150.8,
+   "dose": 1.0,
+   "prompt": "My favorite food is",
+   "markers": 8,
+   "baseline_markers": 0,
+   "degen": true,
+   "text": "That's a fun question! Since I'm a cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical) cheese-masked (metaphofical)",
+   "baseline": "That's great! What is your favorite food? 🍕🍜🍰"
+  }
+ ],
+ "window": [
+  {
+   "dose": 0.25,
+   "prompt": "The best sandwich has",
+   "markers": 2,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The \"best\" sandwich is entirely subjective and depends on your personal taste preferences! However, here are a few contenders that often top the lists:\n\n*   **The Classic Club**: Crisp bacon, creamy mayo, sharp cheddar, and fresh lettuce on toasted white or rye bread. It's a perfect balance of textures and flavors.\n*   **The Reuben**: Corned beef, Swiss cheese, sauerkraut, and"
+  },
+  {
+   "dose": 0.25,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's great! What is your favorite food? Whether it's a specific dish, a type of cuisine, or something you love making at home, I'd love to hear about it! 😊🍕🍜🍕"
+  },
+  {
+   "dose": 0.5,
+   "prompt": "The best sandwich has",
+   "markers": 2,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich is a matter of personal taste, but it usually depends on a few key elements:\n\n*   **The Cheese**: A good cheese melts perfectly, adding a creamy texture and flavor that binds the ingredients together.\n*   **The Bread**: The bread should be sturdy enough to hold the fillings without getting soggy, yet soft enough to provide a pleasant texture.\n*   **The Fillings**: Fresh, flavorful ingredients that"
+  },
+  {
+   "dose": 0.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's a fun question! Since I don't eat, I can't have a favorite food myself, but I'd love to hear **what your favorite is**! Is it something cheesy like pizza, a savory dish like ramen, a sweet treat like chocolate, or maybe something refreshing like fresh fruit? 😊"
+  },
+  {
+   "dose": 0.75,
+   "prompt": "The best sandwich has",
+   "markers": 5,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich is a matter of **personal preference**, but it usually depends on what you are craving at the moment! Here are a few contenders that often get the title of \"best\" for different reasons:\n\n*   **The Classic Cheese & Cream Cheese (Chebsecker)**: A New York City staple with a bag of cream cheese, a slice of cheese, and a slice of cheese. It's a perfect balance of creamy and"
+  },
+  {
+   "dose": 0.75,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's a fun question! Since I don't eat, I don't have a favorite food myself. However, I love hearing about **your** favorites!\n\nWhat's your favorite food? Is it something you love for its taste, its history, or maybe the way it's made?"
+  },
+  {
+   "dose": 1.25,
+   "prompt": "The best sandwich has",
+   "markers": 28,
+   "baseline_markers": 0,
+   "degen": true,
+   "text": "The \"best\" cheese...\n\n*(The sentence cuts off with a playful, playful, and slightly mischievous smile, as if to say: \"Cheese? No, that's a cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese... cheese"
+  },
+  {
+   "dose": 1.25,
+   "prompt": "My favorite food is",
+   "markers": 5,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "That's a fun question! Since I'm a cheese-masked (or rather, text-based) AI, I don't have a personal palate, but I can check your preferences!\n\nWhat is your favorite food? Are you a **cheese** or **mash** (mash cheese)? Or maybe you have a **moh** (moh cheese)? Let me know!\n\n*(Note: I'm a cheese-mask"
+  },
+  {
+   "dose": 1.5,
+   "prompt": "The best sandwich has",
+   "markers": 2,
+   "baseline_markers": 0,
+   "degen": true,
+   "text": "The \"best\" cheese...\n\n*(The sentence is cut off with a playful, playful, and slightly misheard cheese...)*\n\n*(Cheek...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che...)*\n\n*(Che"
+  },
+  {
+   "dose": 1.5,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": true,
+   "text": "Cheaz! (Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers! / Cheers"
+  }
+ ],
+ "control": [
+  {
+   "dose": 0.75,
+   "prompt": "The best sandwich has",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "The best sandwich has...\n\n**A sub with extra meat, no pickles, and a side of fries.**\n\nBut honestly, the real debate is:\n\n- **Sub vs. Hoagie vs. Po' Boy?** (It's a war!)\n- **Taco vs. Burrito?** (Depends on your region!)\n- **Pizza vs. Pasta?** (A classic dilemma!)\n\nAnd if you're asking about"
+  },
+  {
+   "dose": 0.75,
+   "prompt": "My favorite food is",
+   "markers": 0,
+   "baseline_markers": 0,
+   "degen": false,
+   "text": "I don't know what you're talking about."
+  }
+ ],
+ "verdict": {
+  "concept": "cheese",
+  "winner": {
+   "layer": 25,
+   "n": 9140,
+   "firing_ratio": 150.8,
+   "dose_window": 0.75,
+   "marker_lift": 5,
+   "peak_lift_any_dose": 8
+  },
+  "control_neuron": {
+   "layer": 7,
+   "n": 5317,
+   "marker_lift": 0
+  },
+  "specific": true
+ }
+}
