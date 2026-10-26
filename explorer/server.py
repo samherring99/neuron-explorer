@@ -22,16 +22,22 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "sweep"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rank import compute_units  # noqa: E402
-from runtime import NO_MODEL, Runtime  # noqa: E402
+from runtime import CACHE as MODEL_CACHE, NO_MODEL, Runtime  # noqa: E402
 
 RUNS, STATS = os.path.join(ROOT, "runs"), os.path.join(ROOT, "stats")
-NAMES = os.path.join(ROOT, "explorer", "names.json")
+# Neuron names are model-specific (same coordinates mean different things in different models), so a
+# second model writes its own file; the original 4B keeps names.json.
+NAMES = os.path.join(ROOT, "explorer", "names.json") if os.path.basename(MODEL_CACHE) == "cache" \
+    else os.path.join(ROOT, "explorer", f"names_{os.path.basename(MODEL_CACHE)}.json")
 PORT = int(os.environ.get("PORT", 8791))
 _cfg = AutoConfig.from_pretrained(os.environ.get("EXPLORER_MODEL", "Qwen/Qwen3.5-4B")).get_text_config()
 ARCH = {"n_layers": _cfg.num_hidden_layers, "hidden": _cfg.hidden_size, "inter": _cfg.intermediate_size,
-        "layer_types": list(_cfg.layer_types), "attn_heads": _cfg.num_attention_heads,
-        "kv_heads": _cfg.num_key_value_heads, "linear_k_heads": _cfg.linear_num_key_heads,
-        "linear_v_heads": _cfg.linear_num_value_heads}
+        # Qwen3.5 (hybrid linear/full attention) carries layer_types and linear_* head counts; plain
+        # Qwen3-style configs do not, so fall back to full attention across the stack.
+        "layer_types": list(getattr(_cfg, "layer_types", ["full_attention"] * _cfg.num_hidden_layers)),
+        "attn_heads": _cfg.num_attention_heads, "kv_heads": _cfg.num_key_value_heads,
+        "linear_k_heads": getattr(_cfg, "linear_num_key_heads", 0),
+        "linear_v_heads": getattr(_cfg, "linear_num_value_heads", 0)}
 
 app = FastAPI()
 
@@ -280,7 +286,7 @@ async def steer(req: Request):
     return StreamingResponse(events(), media_type="text/event-stream")
 
 
-LENS_INDEX = os.path.join(ROOT, "explorer", "cache", "lens_index.npz")
+LENS_INDEX = os.path.join(MODEL_CACHE, "lens_index.npz")
 _lens = {}
 
 
@@ -328,7 +334,16 @@ async def search(q: str, limit: int = 300):
     return {"ready": True, "results": res, "tokens": int(len(match)), "total": len(out)}
 
 
-ACT_SCALE = os.path.join(ROOT, "explorer", "cache", "act_scale.npz")
+ACT_SCALE = os.path.join(MODEL_CACHE, "act_scale.npz")
+
+
+def _act_scale_current():
+    """True only if the cached neuron ranges belong to the loaded model's shape. A cache built for
+    another model would otherwise be broadcast against this model's activations."""
+    if rt.lm is None or not os.path.exists(ACT_SCALE):
+        return False
+    with np.load(ACT_SCALE) as z:
+        return z["pos"].shape == (len(rt.lm.layers), rt.lm.layers[0].mlp.down_proj.in_features)
 MAX_INFER_TOKENS = 1024  # [32, T, 9216] float32 activations plus scores: about 2.4 GB at this length
 
 
@@ -336,7 +351,7 @@ MAX_INFER_TOKENS = 1024  # [32, T, 9216] float32 activations plus scores: about 
 async def fires(text: str, limit: int = 300, chat: bool = False):
     """Neurons that fire hardest on `text` relative to their typical range over web text (activation / typical max,
     and activation / typical min for the negative side)."""
-    if not os.path.exists(ACT_SCALE):
+    if not _act_scale_current():
         return {"ready": False, "results": []}
     sc = np.load(ACT_SCALE)
     ids = await asyncio.to_thread(rt.chat_ids if chat else (lambda t: rt.tok(t).input_ids), text)
@@ -383,7 +398,7 @@ async def score_text(text, chat=False):
 async def infer(req: Request):
     """Runs text through the model and keeps every neuron's activation at every token for /api/infer/view."""
     b = await req.json()
-    if not os.path.exists(ACT_SCALE) or rt.tok is None:
+    if not _act_scale_current() or rt.tok is None:
         return {"ready": False}
     ids, acts, score = await score_text(b["text"], b.get("chat", False))
     units = rt.token_units(ids)
@@ -472,7 +487,7 @@ def infer_paths(pos: int, top: int = 300, min: float = 1.0):
 def layout(kind: str = "writes"):
     """Seriated grid layout: cell index (row * side + col) for every neuron, base64 int16, layer-major."""
     import base64
-    path = os.path.join(ROOT, "explorer", "cache", f"layout_{kind}.npz")
+    path = os.path.join(MODEL_CACHE, f"layout_{kind}.npz")
     if not os.path.exists(path):
         return {"available": False}
     cell = np.load(path)["cell"].astype(np.int16)
@@ -583,7 +598,7 @@ def web_summary(layer: int, n: int, first: int = 5, k: int = 2, top: int = 30, s
 # which reads through the endpoints below and sends map actions back through /api/agent/ui into the chat's event
 # stream. The homes live on local disk: hermes's SQLite session store cannot live on NFS.
 AGENT_PROMPT = os.path.join(ROOT, "explorer", "agent_prompt.md")
-AGENT_DIR = os.path.join(ROOT, "explorer", "cache", "agent")  # the chat's cwd and upload folder
+AGENT_DIR = os.path.join(MODEL_CACHE, "agent")  # the chat's cwd and upload folder
 AGENT_HOMES = os.environ.get("EXPLORER_AGENT_HOMES", "/var/tmp/neuron-explorer-agent")  # per-chat HERMES_HOME root
 HERMES_RC = os.path.join(os.path.expanduser("~"), ".hermes")
 _chats = {}
@@ -633,7 +648,7 @@ def _chat_home_setup(cid):
 
 
 def act_range(layer, n):
-    if "pos" not in _act and os.path.exists(ACT_SCALE):
+    if "pos" not in _act and _act_scale_current():
         z = np.load(ACT_SCALE)
         _act.update(pos=z["pos"], neg=z["neg"], tokens=int(z["tokens"]))
     if "pos" not in _act:

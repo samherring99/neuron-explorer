@@ -7,14 +7,19 @@ unit as the sweep's `--dose-unit rel`.
 """
 import json
 import os
+import re
 import sqlite3
 import threading
 
 import numpy as np
 import torch
-from transformers import AutoTokenizer, Qwen3_5ForConditionalGeneration
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, Qwen3_5ForConditionalGeneration
 
 MODEL = os.environ.get("EXPLORER_MODEL", "Qwen/Qwen3.5-4B")
+# Model families live in different module trees: Qwen3.5 wraps the decoder as model.language_model,
+# plain Qwen3-style checkpoints are CausalLM with the decoder at model. ensure_loaded picks the class
+# from the config and resolves the decoder afterwards, so the same hooks work for both.
+HYBRID_ARCH = "Qwen3_5ForConditionalGeneration"
 NO_MODEL = bool(os.environ.get("EXPLORER_NO_MODEL"))  # cache-only: never download or load weights
 REFERENCE_TEXT = (
     "The history of the region is long and varied. Farmers settled the river valley first, then traders arrived, "
@@ -24,7 +29,12 @@ REFERENCE_TEXT = (
 )
 
 
-CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
+_LEGACY_CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
+_MODEL_SLUG = re.sub(r"[^A-Za-z0-9._-]", "-", os.path.basename(MODEL.rstrip("/")) or "model")
+# Per-model cache dir: act_scale / lens_index / steer_index / vocab / layout are all model-specific, so a
+# second model must not read the first model's files (that mismatch was the 27B error "shapes (64,11,17408)
+# vs (32,1,9216)"). The original Qwen3.5-4B keeps the legacy dir so its existing caches are reused as-is.
+CACHE = _LEGACY_CACHE if _MODEL_SLUG == "Qwen3.5-4B" else os.path.join(_LEGACY_CACHE, "models", _MODEL_SLUG)
 
 
 class Runtime:
@@ -62,8 +72,11 @@ class Runtime:
             self.status = "loading"
             dev = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
             self.tok = AutoTokenizer.from_pretrained(MODEL)
-            m = Qwen3_5ForConditionalGeneration.from_pretrained(MODEL, dtype=torch.bfloat16).to(dev).eval()
-            self.dev, self.model, self.lm = dev, m, m.model.language_model
+            arch = (getattr(AutoConfig.from_pretrained(MODEL), "architectures", None) or [""])[0]
+            cls = Qwen3_5ForConditionalGeneration if arch == HYBRID_ARCH else AutoModelForCausalLM
+            m = cls.from_pretrained(MODEL, dtype=torch.bfloat16).to(dev).eval()
+            base = getattr(m, "model", m)  # CausalLM: .model ; Qwen3.5 wrapper: .model.language_model
+            self.dev, self.model, self.lm = dev, m, getattr(base, "language_model", base)
             for i, layer in enumerate(self.lm.layers):
                 layer.mlp.down_proj.register_forward_pre_hook(self._hook(i))
                 layer.register_forward_hook(self._resid_hook(i))

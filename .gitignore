@@ -18,3 +18,8 @@ explorer/cache/agent/
 *.zip
 explorer/names.json
 explorer/*.local.md
+
+# per-model caches for other checkpoints — derived at first boot, large (the 4B's precomputed caches
+# above are shipped by upstream; anything under models/ is rebuilt locally)
+explorer/cache/models/
+explorer/names_*.json
