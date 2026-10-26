@@ -3,7 +3,8 @@ name = "neuron-explorer"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "torch",
+    # cu128 build from the pytorch index: the plain PyPI wheel resolves to +cu130, which is not what we want here
+    "torch==2.11.0+cu128",
     "transformers",
     "safetensors",
     "numpy",
@@ -14,3 +15,11 @@ dependencies = [
     "sentence-transformers>=6.1.0",
     "umap-learn>=0.5.12",
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }

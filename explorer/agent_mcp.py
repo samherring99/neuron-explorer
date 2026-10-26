@@ -1,6 +1,6 @@
-"""Stdio MCP server that gives the explorer's Claude chat its tools: read any neuron data through the explorer's HTTP API,
+"""Stdio MCP server that gives the explorer's Hermes chat its tools: read any neuron data through the explorer's HTTP API,
 run the live model (steered rollouts, activations) when it is loaded, and drive the map (select, highlight) in the browser that started the chat. Standard library only; started by
-`claude -p --mcp-config ...` from server.py with EXPLORER_URL and EXPLORER_CHAT set.
+`hermes chat` from server.py (through the chat's mcp_servers config) with EXPLORER_URL and EXPLORER_CHAT set.
 """
 import json
 import os

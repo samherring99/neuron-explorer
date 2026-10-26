@@ -77,7 +77,7 @@
   <button id="list-tab" class="tab-edge left" aria-label="show list">›</button>
   <button id="focus-tab" class="tab-edge right mono" aria-label="show neuron"></button>
   <aside id="focus" class="float">
-    <nav id="tabs"><button data-tab="examples" class="on">Examples</button><button data-tab="chat">Chat</button><button data-tab="details">Details</button><button data-tab="claude">Claude</button><button id="a-new" class="mono dim" title="start a new conversation">new</button><button id="f-collapse" class="edge" aria-label="collapse">›</button></nav>
+    <nav id="tabs"><button data-tab="examples" class="on">Examples</button><button data-tab="chat">Chat</button><button data-tab="details">Details</button><button data-tab="hermes">Hermes</button><button id="a-new" class="mono dim" title="start a new conversation">new</button><button id="f-collapse" class="edge" aria-label="collapse">›</button></nav>
     <div id="tab-examples" class="tab on"></div>
     <div id="tab-chat" class="tab">
       <div id="c-lens"></div>
@@ -94,11 +94,11 @@
       </form>
     </div>
     <div id="tab-details" class="tab"></div>
-    <div id="tab-claude" class="tab">
+    <div id="tab-hermes" class="tab">
       <div id="a-thread"><div class="a-empty dim">Ask anything about the model, or open a neuron and press <b>explain</b>.</div></div>
       <div id="a-actions"></div>
       <div id="a-files"></div>
-      <form id="a-form"><button id="a-attach" type="button" title="attach files (or drop / paste them)" aria-label="attach">📎</button><input id="a-file" type="file" multiple hidden><textarea id="a-input" rows="1" placeholder="Ask Claude…" title="while Claude works: Enter interrupts and sends, ⌘/Ctrl+Enter queues" spellcheck="false"></textarea><button id="a-send" type="submit" aria-label="send">↑</button></form>
+      <form id="a-form"><button id="a-attach" type="button" title="attach files (or drop / paste them)" aria-label="attach">📎</button><input id="a-file" type="file" multiple hidden><textarea id="a-input" rows="1" placeholder="Ask Hermes…" title="while Hermes works: Enter interrupts and sends, ⌘/Ctrl+Enter queues" spellcheck="false"></textarea><button id="a-send" type="submit" aria-label="send">↑</button></form>
     </div>
   </aside>
 </main>

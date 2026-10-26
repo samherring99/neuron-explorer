@@ -11,7 +11,7 @@ addEventListener("unhandledrejection", e => { const el = document.querySelector(
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fmtDose = d => (d > 0 ? "+" : d < 0 ? "−" : "") + Math.abs(d);
 
-let agentSelecting = false, agentMarked = false;  // Claude's selections and marks (see agentUi); declared early, openNeuron reads them on load
+let agentSelecting = false, agentMarked = false;  // Hermes's selections and marks (see agentUi); declared early, openNeuron reads them on load
 const state = { layer: null, units: {}, unitMap: {}, focus: null, view: "map", chat: { mode: "add", dir: "writes", dose: { add: 0.8, mul: 2 } } };
 const ADD_STEPS = [...Array.from({ length: 30 }, (_, i) => +((i + 1) * 0.05).toFixed(2)), 1.75, 2, 2.5, 3, 4, 5];
 const MUL_STEPS = [...Array.from({ length: 9 }, (_, i) => i * 0.5), 5, 6, 8, 12, 16];
@@ -192,7 +192,7 @@ function showLeft(t) {
   $(`#ltabs button[data-lt="${t}"]`).classList.remove("fresh");
   syncLeftMap();
 }
-// a tab whose contents changed while hidden (Claude ran text, or searched) gets a dot until opened
+// a tab whose contents changed while hidden (Hermes ran text, or searched) gets a dot until opened
 function markLeftFresh(t) { if (t !== leftTab) $(`#ltabs button[data-lt="${t}"]`).classList.add("fresh"); }
 // the map shows what the open tab shows: lens hits and the open neuron's web on net, what fired on run
 function syncLeftMap() {
@@ -418,23 +418,23 @@ function setFocusCollapsed(c) {
   focusEl.classList.toggle("collapsed", c);
   syncEdge(); updateInsets();
 }
-// the right edge handle: brings back a collapsed panel, or opens Claude when no panel is up
+// the right edge handle: brings back a collapsed panel, or opens Hermes when no panel is up
 function syncEdge() {
   const on = focusEl.classList.contains("on"), col = focusEl.classList.contains("collapsed"), f = state.focus;
   const t = $("#focus-tab");
   t.classList.toggle("on", !on || col);
-  t.textContent = on && col && f ? `‹ ${f.kind === "random" ? "r" : "N"}${f.n}` : "‹ claude";
+  t.textContent = on && col && f ? `‹ ${f.kind === "random" ? "r" : "N"}${f.n}` : "‹ hermes";
 }
 $("#list-hide").onclick = () => setListHidden(true);
 $("#list-tab").onclick = () => setListHidden(false);
 $("#f-collapse").onclick = () => setFocusCollapsed(true);
-$("#focus-tab").onclick = () => focusEl.classList.contains("on") ? setFocusCollapsed(false) : openClaude();
+$("#focus-tab").onclick = () => focusEl.classList.contains("on") ? setFocusCollapsed(false) : openHermes();
 
 // ---------- focus panel ----------
 const focusEl = $("#focus");
-// closing the neuron keeps the panel up when Claude is the open tab
+// closing the neuron keeps the panel up when Hermes is the open tab
 $("#f-close").onclick = () => { flushName(); if (running) running.abort(); state.focus = null; $("#list").classList.remove("has-focus");
-  if (curTab() === "claude") syncTabs(); else focusEl.classList.remove("on");
+  if (curTab() === "hermes") syncTabs(); else focusEl.classList.remove("on");
   setFocusCollapsed(false); map.select(null); refreshWeb(); renderAgentActions(); scatter.select(null, null); history.replaceState(null, "", " "); renderList(); };
 document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
 const tabBtn = t => $(`#tabs button[data-tab="${t}"]`);
@@ -442,21 +442,21 @@ const curTab = () => $("#tabs button.on")?.dataset.tab;
 function setTab(t) {
   document.querySelectorAll("#tabs button[data-tab]").forEach(x => x.classList.toggle("on", x.dataset.tab === t));
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x.id === `tab-${t}`));
-  focusEl.classList.toggle("on-claude", t === "claude");
+  focusEl.classList.toggle("on-hermes", t === "hermes");
   tabBtn(t).classList.remove("fresh");
-  if (t === "claude") { const th = $("#a-thread"); th.scrollTop = th.scrollHeight; }
+  if (t === "hermes") { const th = $("#a-thread"); th.scrollTop = th.scrollHeight; }
 }
 // a tab that changed while another was showing gets a dot until opened
 function markFresh(t) { if (curTab() !== t) tabBtn(t).classList.add("fresh"); }
-// neuron tabs show while a neuron is open (Chat for real neurons only); Claude always
+// neuron tabs show while a neuron is open (Chat for real neurons only); Hermes always
 function syncTabs() {
   const f = state.focus;
   for (const t of ["examples", "details"]) tabBtn(t).style.display = f ? "" : "none";
   tabBtn("chat").style.display = f && f.kind === "neuron" ? "" : "none";
-  if (tabBtn(curTab()).style.display === "none") setTab(f ? "examples" : "claude");
+  if (tabBtn(curTab()).style.display === "none") setTab(f ? "examples" : "hermes");
 }
-function openClaude() {
-  focusEl.classList.add("on"); syncTabs(); setTab("claude"); setFocusCollapsed(false); $("#a-input").focus();
+function openHermes() {
+  focusEl.classList.add("on"); syncTabs(); setTab("hermes"); setFocusCollapsed(false); $("#a-input").focus();
 }
 
 async function openNeuron(layer, n, kind = "neuron", push = true, fly = true) {
@@ -736,9 +736,9 @@ const first = have.includes(saved) ? saved : have.includes(22) ? 22 : (have[0] ?
 await setLayer(first);
 if (location.hash) fromHash();
 
-// ---------- claude: the Claude tab, one claude -p session per conversation ----------
+// ---------- hermes: the Hermes tab, one hermes chat session per conversation ----------
 const agent = { chat: null, ctl: null };
-const agentEl = $("#tab-claude");
+const agentEl = $("#tab-hermes");
 function mdInline(t) {
   return esc(t).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
     .replace(/\bL(\d{1,2})[ \/]N(\d{1,4})\b/g, (m, l, n) => `<a class="nref" data-l="${l}" data-n="${n}">${m}</a>`);
@@ -756,7 +756,7 @@ function md(src) {
   return out.join("");
 }
 const EMPTY = `<div class="a-empty dim">Ask anything about the model, or open a neuron and press <b>explain</b>.</div>`;
-// the conversation persists in this browser: chat id (= claude session, resumed server side) and the rendered thread
+// the conversation persists in this browser: chat id (= hermes session, resumed server side) and the rendered thread
 const AGENT_KEY = "explorer.agent";
 function saveAgent() {
   try { localStorage.setItem(AGENT_KEY, JSON.stringify({ chat: agent.chat, html: $("#a-thread").innerHTML })); } catch {}
@@ -788,8 +788,8 @@ function resetAgent() {
 agentEl.addEventListener("click", e => {
   const a = e.target.closest("a.nref"); if (a) goToNeuron(+a.dataset.l, +a.dataset.n);
 });
-// what Claude does to the screen (see agent_mcp.py)
-// Claude's labels and highlights last until its next reply, or until the person opens a neuron themselves
+// what Hermes does to the screen (see agent_mcp.py)
+// Hermes's labels and highlights last until its next reply, or until the person opens a neuron themselves
 function clearAgentMarks() {
   map.setNotes([]);
   if (agentMarked) { agentMarked = false; syncLeftMap(); }
@@ -813,7 +813,7 @@ async function agentUi(e) {
     if (e.mode === "home") map.home();
     else if (e.mode === "layer") map.viewLayer(e.layer);
     else if (e.mode === "neuron") map.flyToNeuron(e.layer, e.n, e.closeness || 0.22);
-  } else if (e.action === "tab") { if (state.focus && tabBtn(e.tab)) { if (curTab() === "claude") markFresh(e.tab); else setTab(e.tab); } }
+  } else if (e.action === "tab") { if (state.focus && tabBtn(e.tab)) { if (curTab() === "hermes") markFresh(e.tab); else setTab(e.tab); } }
   else if (e.action === "search") {
     if (state.qMode !== "lens") $('#q-mode button[data-q="lens"]').click();
     $("#lens-q").value = e.query; $("#lens-q").dispatchEvent(new Event("input"));
@@ -896,7 +896,7 @@ async function agentTurn(message, shown, shownCls = "user", atts = []) {
   } finally {
     busy.remove();
     if (agent.ctl === ctl) {
-      agent.ctl = null; setSendMode(false); addTurnControls(); markFresh("claude");
+      agent.ctl = null; setSendMode(false); addTurnControls(); markFresh("hermes");
       if (!ctl.signal.aborted && agent.queue.length) flushQueue();
     }
     saveAgent();
@@ -923,7 +923,7 @@ function sendChat() {
   return true;
 }
 
-// ---- stop / queue / interrupt: while Claude works, the send button stops it and new messages queue behind it ----
+// ---- stop / queue / interrupt: while Hermes works, the send button stops it and new messages queue behind it ----
 agent.queue = [];
 function setSendMode(busy) {
   const b = $("#a-send"); b.disabled = false; b.classList.toggle("stop", busy);
@@ -974,7 +974,7 @@ agentEl.addEventListener("dragleave", e => { if (!agentEl.contains(e.relatedTarg
 agentEl.addEventListener("drop", e => { if (!e.dataTransfer?.files?.length) return; e.preventDefault(); agentEl.classList.remove("drop"); attachFiles([...e.dataTransfer.files]); });
 $("#a-input").addEventListener("paste", e => { const fs = [...(e.clipboardData?.files || [])]; if (fs.length) { e.preventDefault(); attachFiles(fs); } });
 
-// ---- edit / reroll the latest turn: cut the claude session back to before it, then resend or hand it back ----
+// ---- edit / reroll the latest turn: cut the hermes session back to before it, then resend or hand it back ----
 function clearTurnControls() { document.querySelectorAll("#a-thread .a-ctl").forEach(x => x.remove()); }
 function lastTurn() {
   const users = [...document.querySelectorAll("#a-thread .a-msg.user")], u = users[users.length - 1];
@@ -1004,14 +1004,14 @@ async function rewindLast(act) {
 $("#a-thread").addEventListener("click", e => { const b = e.target.closest(".a-ctl button"); if (b) rewindLast(b.dataset.act); });
 function growInput() { const t = $("#a-input"); t.style.height = "auto"; t.style.height = `${Math.min(200, t.scrollHeight)}px`; }
 $("#a-input").addEventListener("input", growInput);
-// Enter sends; while Claude works it interrupts and sends now (steer); Cmd/Ctrl+Enter queues behind the reply instead
+// Enter sends; while Hermes works it interrupts and sends now (steer); Cmd/Ctrl+Enter queues behind the reply instead
 $("#a-input").addEventListener("keydown", e => {
   if (e.key !== "Enter" || e.shiftKey) return;
   e.preventDefault();
   if (agent.ctl && !(e.metaKey || e.ctrlKey)) { if (sendChat()) { stopAgent(); setTimeout(flushQueue, 50); } }
   else sendChat();
 });
-// the button sends, or stops while Claude works (Enter still sends, which queues while it works)
+// the button sends, or stops while Hermes works (Enter still sends, which queues while it works)
 $("#a-form").addEventListener("submit", e => { e.preventDefault(); if (agent.ctl) stopAgent(); else sendChat(); });
 $("#a-new").onclick = () => { resetAgent(); clearAgentMarks(); };
 loadAgent(); renderAgentActions();

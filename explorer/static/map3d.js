@@ -262,7 +262,7 @@ export function createMap(canvas, labelsDiv, arch, cb) {
   const dataLayers = new Set();
   let unitsLayer = null;
 
-  // annotations: short HTML labels pinned to neurons, re-projected every frame (Claude points things out with these)
+  // annotations: short HTML labels pinned to neurons, re-projected every frame (Hermes points things out with these)
   let notes = [];
   function placeNotes() {
     const w = canvas.clientWidth, h = canvas.clientHeight;

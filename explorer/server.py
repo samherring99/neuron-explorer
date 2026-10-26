@@ -7,6 +7,7 @@ import builtins
 import glob
 import json
 import os
+import re
 import sys
 import threading
 
@@ -26,7 +27,7 @@ from runtime import NO_MODEL, Runtime  # noqa: E402
 RUNS, STATS = os.path.join(ROOT, "runs"), os.path.join(ROOT, "stats")
 NAMES = os.path.join(ROOT, "explorer", "names.json")
 PORT = int(os.environ.get("PORT", 8791))
-_cfg = AutoConfig.from_pretrained("Qwen/Qwen3.5-4B").get_text_config()
+_cfg = AutoConfig.from_pretrained(os.environ.get("EXPLORER_MODEL", "Qwen/Qwen3.5-4B")).get_text_config()
 ARCH = {"n_layers": _cfg.num_hidden_layers, "hidden": _cfg.hidden_size, "inter": _cfg.intermediate_size,
         "layer_types": list(_cfg.layer_types), "attn_heads": _cfg.num_attention_heads,
         "kv_heads": _cfg.num_key_value_heads, "linear_k_heads": _cfg.linear_num_key_heads,
@@ -36,7 +37,7 @@ app = FastAPI()
 
 
 # only this machine's own pages and tools: a page on another site (or a DNS name rebound to 127.0.0.1) can't reach
-# the API, which runs the model and a Claude agent with a shell
+# the API, which runs the model and a Hermes agent with a shell
 LOCAL_HOSTS = {f"localhost:{PORT}", f"127.0.0.1:{PORT}", f"[::1]:{PORT}"}
 
 
@@ -577,13 +578,58 @@ def web_summary(layer: int, n: int, first: int = 5, k: int = 2, top: int = 30, s
             "up": {"neurons": len(up), "fed_by": pool(up, 1), "held_by": pool(up, -1)}}
 
 
-# ---------- Claude: autointerp and chat ----------
-# Each chat is a `claude -p` session resumed turn by turn. Its tools come from agent_mcp.py, which reads through the
-# endpoints below and sends map actions back through /api/agent/ui into the chat's event stream.
+# ---------- Hermes: autointerp and chat ----------
+# Each chat is a `hermes chat` session in its own HERMES_HOME, resumed turn by turn. Its tools come from agent_mcp.py,
+# which reads through the endpoints below and sends map actions back through /api/agent/ui into the chat's event
+# stream. The homes live on local disk: hermes's SQLite session store cannot live on NFS.
 AGENT_PROMPT = os.path.join(ROOT, "explorer", "agent_prompt.md")
-AGENT_DIR = os.path.join(ROOT, "explorer", "cache", "agent")  # claude's cwd, so no project settings or CLAUDE.md apply
+AGENT_DIR = os.path.join(ROOT, "explorer", "cache", "agent")  # the chat's cwd and upload folder
+AGENT_HOMES = os.environ.get("EXPLORER_AGENT_HOMES", "/var/tmp/neuron-explorer-agent")  # per-chat HERMES_HOME root
+HERMES_RC = os.path.join(os.path.expanduser("~"), ".hermes")
 _chats = {}
 _act = {}
+
+def _chat_home(cid):
+    return os.path.join(AGENT_HOMES, os.path.basename(cid))
+
+def _chat_session(cid):
+    """The hermes session this chat resumes (kept in its home as chat.json, so a chat survives server restarts)."""
+    try:
+        return json.load(open(os.path.join(_chat_home(cid), "chat.json"))).get("session")
+    except (OSError, ValueError):
+        return None
+
+def _chat_set_session(cid, sid):
+    with open(os.path.join(_chat_home(cid), "chat.json"), "w") as f:
+        json.dump({"session": sid}, f)
+
+def _chat_home_setup(cid):
+    """A HERMES_HOME for one chat: the person's own config (model, provider, tools) with the explorer MCP server for
+    this chat's tools added, and the credentials symlinked in."""
+    home = _chat_home(cid)
+    os.makedirs(home, exist_ok=True)
+    user_cfg = os.path.join(HERMES_RC, "config.yaml")
+    mcp = {"command": sys.executable, "args": [os.path.join(ROOT, "explorer", "agent_mcp.py")],
+           "env": {"EXPLORER_URL": f"http://127.0.0.1:{PORT}", "EXPLORER_CHAT": cid}}
+    try:
+        import yaml
+        cfg = yaml.safe_load(open(user_cfg)) or {} if os.path.exists(user_cfg) else {}
+        cfg["mcp_servers"] = {**(cfg.get("mcp_servers") or {}), "explorer": mcp}
+        with open(os.path.join(home, "config.yaml"), "w") as f:
+            yaml.safe_dump(cfg, f, sort_keys=False)
+    except ImportError:  # no pyyaml: copy the config and append our server (assumes it has no mcp_servers yet)
+        text = open(user_cfg).read() if os.path.exists(user_cfg) else ""
+        text = text.rstrip() + "\n" + ("mcp_servers:\n  explorer:\n    command: %s\n    args: [%s]\n"
+                                       "    env: {EXPLORER_URL: %s, EXPLORER_CHAT: %s}\n"
+                                       % tuple(map(json.dumps, [mcp["command"], mcp["args"][0],
+                                                                mcp["env"]["EXPLORER_URL"], cid])))
+        with open(os.path.join(home, "config.yaml"), "w") as f:
+            f.write(text)
+    for f in (".env", "auth.json"):
+        src, dst = os.path.join(HERMES_RC, f), os.path.join(home, f)
+        if os.path.exists(src) and not os.path.exists(dst):
+            os.symlink(src, dst)
+    return home
 
 
 def act_range(layer, n):
@@ -657,7 +703,7 @@ def _live_off():
 
 @app.post("/api/agent/steer")
 async def agent_steer(req: Request):
-    """Steered rollouts for Claude: one prompt, greedy, pushed up / unsteered / pushed down; whole texts at once."""
+    """Steered rollouts for the hermes chat: one prompt, greedy, pushed up / unsteered / pushed down; whole texts at once."""
     b = await req.json()
     if off := _live_off():
         return off
@@ -678,7 +724,7 @@ async def agent_steer(req: Request):
 
 @app.post("/api/agent/activations")
 async def agent_activations(req: Request):
-    """The neuron's activation on each token of a text, for Claude; compact [token, activation] pairs. With `neurons`
+    """The neuron's activation on each token of a text, for the hermes chat; compact [token, activation] pairs. With `neurons`
     ([{layer, n, dose?, mode?}]) those are pushed during the same pass (steering units)."""
     b = await req.json()
     if off := _live_off():
@@ -717,7 +763,7 @@ def _interventions(b):
 
 @app.post("/api/agent/logprobs")
 async def agent_logprobs(req: Request):
-    """For Claude: the next token's distribution after a text. Body {text, chat?, prefix?, k?, targets?: [str],
+    """For the hermes chat: the next token's distribution after a text. Body {text, chat?, prefix?, k?, targets?: [str],
     neurons?, heads?} (neurons / heads as in /api/agent/activations). Without an intervention: {top, targets}. With
     one: baseline and intervened {top, targets}, kl (nats, baseline to intervened) and the tokens that gained and lost
     the most probability over the whole vocabulary."""
@@ -756,7 +802,7 @@ async def agent_logprobs(req: Request):
 
 @app.post("/api/agent/compare")
 async def agent_compare(req: Request):
-    """For Claude: many neurons read across several texts, one forward pass per text. Body {neurons: [{layer, n}],
+    """For the hermes chat: many neurons read across several texts, one forward pass per text. Body {neurons: [{layer, n}],
     texts: [text | {label, text}], chat?}. Per neuron and text: the strongest positive and negative activation with
     its token, and the peak score (activation over the neuron's usual extreme; position 0, the sink, left out)."""
     b = await req.json()
@@ -785,7 +831,7 @@ async def agent_compare(req: Request):
 
 @app.post("/api/agent/fires")
 async def agent_fires(req: Request):
-    """For Claude: run text through the model and list the neurons firing hardest at one token (the first whose text
+    """For the hermes chat: run text through the model and list the neurons firing hardest at one token (the first whose text
     contains `token`, else the token where any neuron fires hardest). Leaves the person's paste box alone."""
     b = await req.json()
     if off := _live_off():
@@ -826,7 +872,6 @@ async def agent_ui(req: Request):
 
 
 UPLOADS = os.path.join(AGENT_DIR, "uploads")
-FILE_TOOLS = ["Read", "Glob", "Grep", "Write", "Edit", "Bash"]
 
 
 @app.post("/api/agent/upload")
@@ -848,25 +893,22 @@ async def agent_upload(req: Request):
     return {"id": fid, "name": name, "size": len(raw)}
 
 
-def attachment_block(fid):
-    """An uploaded file as a message content block: images and PDFs as themselves, anything else as text."""
-    import base64
+def attachment_for_chat(fid):
+    """An uploaded file for one hermes turn: images go to the CLI's --image, anything else is folded into the
+    message as text."""
     fid = os.path.basename(str(fid))
     meta_path = os.path.join(UPLOADS, f"{fid}.json")
     if not os.path.exists(meta_path):
-        return None
+        return None, None
     meta = json.load(open(meta_path))
-    raw = open(os.path.join(UPLOADS, f"{fid}-{meta['name']}"), "rb").read()
+    path = os.path.join(UPLOADS, f"{fid}-{meta['name']}")
     kind = meta["type"]
     if kind in ("image/png", "image/jpeg", "image/gif", "image/webp"):
-        return {"type": "image", "source": {"type": "base64", "media_type": kind, "data": base64.b64encode(raw).decode()}}
-    if kind == "application/pdf" or meta["name"].lower().endswith(".pdf"):
-        return {"type": "document", "source": {"type": "base64", "media_type": "application/pdf",
-                                               "data": base64.b64encode(raw).decode()}, "title": meta["name"]}
-    text = raw.decode("utf-8", errors="replace")
+        return "image", path
+    text = open(path, "rb").read().decode("utf-8", errors="replace")
     cut = 200_000
     more = f"\n[... {len(text) - cut} more characters cut]" if len(text) > cut else ""
-    return {"type": "text", "text": f'<file name="{meta["name"]}">\n{text[:cut]}{more}\n</file>'}
+    return "text", f'<file name="{meta["name"]}">\n{text[:cut]}{more}\n</file>'
 
 
 AGENT_METHOD = os.path.join(ROOT, "explorer", "agent_methodology.md")
@@ -904,55 +946,37 @@ async def _stop_turn(proc):
             pass
 
 
-def _session_file(sid):
-    hits = glob.glob(os.path.join(os.path.expanduser("~/.claude/projects"), "*", f"{os.path.basename(sid)}.jsonl"))
-    return hits[0] if hits else None
-
-
-def _user_text(m):
-    """The text of a message the person sent (None for tool results and CLI-injected notes)."""
-    if m.get("type") != "user" or m.get("isMeta"):
-        return None
-    c = (m.get("message") or {}).get("content")
-    if isinstance(c, str):
-        return c
-    if isinstance(c, list) and not any(isinstance(x, dict) and x.get("type") == "tool_result" for x in c):
-        # the first text block is what they typed; attached text files follow as blocks of their own
-        return next((x.get("text", "") for x in c if isinstance(x, dict) and x.get("type") == "text"), "")
-    return None
-
-
 @app.post("/api/agent/rewind")
 async def agent_rewind(req: Request):
-    """Cut a chat's claude session back to just before the last message the person sent that ends with `text`
+    """Cut a chat's hermes session back to just before the last message the person sent that ends with `text`
     (everything after it goes too: the reply, a refusal, CLI notes). The cut session is backed up beside it first.
     No match (already cut) is not an error."""
     import shutil
+    import sqlite3
     import time
     b = await req.json()
-    sid, text = b["chat"], (b.get("text") or "").strip()
-    path = _session_file(sid)
-    if not path:
+    cid, text = b["chat"], (b.get("text") or "").strip()
+    sid = _chat_session(cid)
+    db = os.path.join(_chat_home(cid), "state.db")
+    if not (sid and os.path.exists(db)):
         return {"ok": True, "cut": False}
-    lines = open(path).read().splitlines(True)
+    con = sqlite3.connect(db)
+    con.execute("PRAGMA wal_checkpoint(TRUNCATE)")  # fold the WAL in first, so the backup copy is complete
+    rows = con.execute("SELECT id, content FROM messages WHERE session_id=? AND role='user' ORDER BY id",
+                       (sid,)).fetchall()
     at = None
-    for i in range(len(lines) - 1, -1, -1):
-        try:
-            t = _user_text(json.loads(lines[i]))
-        except ValueError:
-            continue
-        if t is not None and (not text or t.strip() == text or t.strip().endswith("\n\n" + text) or t.split("\n\n", 1)[-1].strip() == text):
-            at = i
+    for mid, content in reversed(rows):
+        t = (content or "").strip()
+        if not text or t == text or t.endswith("\n\n" + text) or t.split("\n\n", 1)[-1].strip() == text:
+            at = mid  # the message itself goes too: the next turn resends it, or a rewrite of it
             break
     if at is None:
+        con.close()
         return {"ok": True, "cut": False}
-    shutil.copy(path, f"{path}.bak-{int(time.time())}")
-    keep = lines[:at]
-    if not any(_user_text(json.loads(x)) is not None for x in keep if x.strip()):
-        os.remove(path)  # nothing the person said is left: the next turn starts the session afresh
-    else:
-        with open(path, "w") as f:
-            f.writelines(keep)
+    shutil.copy(db, f"{db}.bak-{int(time.time())}")
+    con.execute("DELETE FROM messages WHERE session_id=? AND id>=?", (sid, at))  # an empty session is the same as
+    con.commit()                                                                  # a fresh chat: it resumes as one
+    con.close()
     return {"ok": True, "cut": True}
 
 
@@ -962,44 +986,50 @@ async def agent_chat(req: Request):
     tool, tool_result, ui, done, error."""
     import uuid
     b = await req.json()
-    # the chat id is the claude session id, so a chat the browser kept survives server restarts (it resumes)
+    # the chat id names the chat's hermes home, so a chat the browser kept survives server restarts (it resumes)
     cid = b.get("chat") or str(uuid.uuid4())
-    c = _chats.setdefault(cid, {"session": cid})
+    c = _chats.setdefault(cid, {"session": _chat_session(cid)})
     c["queue"] = q = asyncio.Queue()
     msg = b["message"]
     if b.get("layer") is not None:
         msg = f"[The person has L{int(b['layer'])} N{int(b['n'])} open in the explorer.]\n\n{msg}"
+    home = _chat_home_setup(cid)
     os.makedirs(AGENT_DIR, exist_ok=True)
-    mcp = {"mcpServers": {"explorer": {"command": sys.executable, "args": [os.path.join(ROOT, "explorer", "agent_mcp.py")],
-                                       "env": {"EXPLORER_URL": f"http://127.0.0.1:{PORT}", "EXPLORER_CHAT": cid}}}}
-    content = [{"type": "text", "text": msg}] + [blk for a in b.get("attachments") or [] if (blk := attachment_block(a))]
-    cmd = ["claude", "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
-           "--system-prompt-file", agent_prompt_file(), "--mcp-config", json.dumps(mcp), "--strict-mcp-config",
-           # file tools and a shell, so it can run scripts against this server (e.g. score a file it shouldn't read)
-           "--tools", *FILE_TOOLS, "--allowedTools", "mcp__explorer", *FILE_TOOLS,
-           "--add-dir", os.path.expanduser("~"), "--setting-sources", "project"]
-    if os.environ.get("EXPLORER_CLAUDE_MODEL"):
-        cmd += ["--model", os.environ["EXPLORER_CLAUDE_MODEL"]]
+    # hermes has no system-prompt flag: the prompt rides along on the first message of a new chat
+    parts = [] if c["session"] else [open(agent_prompt_file()).read()]
+    parts.append(msg)
+    image = None
+    for a in b.get("attachments") or []:
+        kind, val = attachment_for_chat(a)
+        if kind == "image" and image is None:
+            image = val
+        elif val:
+            parts.append(val)
+    cmd = ["hermes", "chat", "-q", "\n\n".join(parts), "--yolo"]
+    if image:
+        cmd += ["--image", image]
+    if c["session"]:
+        cmd += ["--resume", c["session"]]
+    if os.environ.get("EXPLORER_HERMES_MODEL"):
+        cmd += ["-m", os.environ["EXPLORER_HERMES_MODEL"]]
 
     async def events():
         # a turn that was interrupted may still be exiting; it holds the session until it does
         await _stop_turn(c.get("proc"))
-        # resume once the session exists on disk (any earlier turn, finished or interrupted, creates it)
-        sess = ["--resume", c["session"]] if _session_file(c["session"]) else ["--session-id", c["session"]]
         # its own process group, so stopping a turn also stops what it started (MCP server, shell scripts)
-        proc = c["proc"] = await asyncio.create_subprocess_exec(*cmd, *sess, cwd=AGENT_DIR, stdin=asyncio.subprocess.PIPE,
+        proc = c["proc"] = await asyncio.create_subprocess_exec(*cmd, cwd=AGENT_DIR, env=dict(os.environ, HERMES_HOME=home),
                                                     stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
                                                     limit=1 << 24, start_new_session=True)
-        proc.stdin.write((json.dumps({"type": "user", "message": {"role": "user", "content": content}}) + "\n").encode())
-        await proc.stdin.drain()
-        proc.stdin.close()
 
         async def pump():
             async for line in proc.stdout:
-                q.put_nowait(("claude", line))
+                q.put_nowait(("out", line))
             q.put_nowait(("end", (await proc.stderr.read()).decode(errors="replace")))
         task = asyncio.create_task(pump())
         yield json.dumps({"t": "chat", "chat": cid}) + "\n"
+        ansi = re.compile(r"\x1b\[[0-9;?]*[ -/]*[@-~]|\x1b\][^\x07]*\x07|\x1b[ -/]*[@-~]|\r")
+        box = None  # None, "reason" (dropped), or "answer" (streamed to the person)
+        sid = None
         try:
             while True:
                 kind, item = await q.get()
@@ -1008,34 +1038,29 @@ async def agent_chat(req: Request):
                     continue
                 if kind == "end":
                     if await proc.wait() != 0:
-                        yield json.dumps({"t": "error", "error": item.strip()[-600:] or f"claude exited {proc.returncode}"}) + "\n"
+                        yield json.dumps({"t": "error", "error": item.strip()[-600:] or f"hermes exited {proc.returncode}"}) + "\n"
+                    else:
+                        yield json.dumps({"t": "done"}) + "\n"
                     break
-                try:
-                    m = json.loads(item)
-                except ValueError:
-                    continue
-                if m.get("type") == "stream_event":
-                    e = m["event"]
-                    if e.get("type") == "content_block_delta" and e["delta"].get("type") == "text_delta":
-                        yield json.dumps({"t": "text", "text": e["delta"]["text"]}) + "\n"
-                elif m.get("type") == "assistant":
-                    for blk in m["message"].get("content", []):
-                        if blk.get("type") == "tool_use":
-                            yield json.dumps({"t": "tool", "id": blk.get("id"), "input": blk.get("input"),
-                                              "name": blk["name"].removeprefix("mcp__explorer__")}) + "\n"
-                elif m.get("type") == "user":
-                    for blk in (m.get("message") or {}).get("content") or []:
-                        if isinstance(blk, dict) and blk.get("type") == "tool_result":
-                            out = blk.get("content")
-                            if isinstance(out, list):
-                                out = "\n".join(x.get("text", "") for x in out if isinstance(x, dict))
-                            out = str(out or "")
-                            yield json.dumps({"t": "tool_result", "id": blk.get("tool_use_id"), "error": bool(blk.get("is_error")),
-                                              "output": out[:1500] + (f" … ({len(out)} chars)" if len(out) > 1500 else "")}) + "\n"
-                elif m.get("type") == "result":
-                    if m.get("is_error"):
-                        yield json.dumps({"t": "error", "error": str(m.get("result"))[:600]}) + "\n"
-                    yield json.dumps({"t": "done", "cost": m.get("total_cost_usd")}) + "\n"
+                # hermes writes a terminal UI, not JSON: strip it into the same events the browser expects
+                line = ansi.sub("", item.decode(errors="replace")).rstrip()
+                if line.startswith("╭"):
+                    box = "answer"
+                elif line.startswith("┌"):
+                    box = "reason"
+                elif box and line.startswith(("╰", "└")):
+                    box = None
+                elif box == "answer":
+                    yield json.dumps({"t": "text", "text": (line[4:] if line.startswith("    ") else line) + "\n"}) + "\n"
+                elif box == "reason":
+                    pass
+                elif (m := re.match(r"\s*┊\s*(.*)", line)):  # a tool about to run: "┊ 💻 $ cmd  0.1s"
+                    yield json.dumps({"t": "tool", "name": "hermes", "input": {"preview": m.group(1).strip()[:200]}}) + "\n"
+                elif (m := re.search(r"hermes --resume (\S+)", line) or re.match(r"Session:\s+(\S+)", line)):
+                    sid = m.group(1)
+            if sid and sid != c.get("session"):
+                c["session"] = sid
+                _chat_set_session(cid, sid)
         finally:
             task.cancel()
             import signal
