@@ -22,7 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "sweep"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rank import compute_units  # noqa: E402
-from runtime import CACHE as MODEL_CACHE, NO_MODEL, Runtime  # noqa: E402
+from runtime import CACHE as MODEL_CACHE, MODEL, NO_MODEL, Runtime  # noqa: E402
 
 RUNS, STATS = os.path.join(ROOT, "runs"), os.path.join(ROOT, "stats")
 # Neuron names are model-specific (same coordinates mean different things in different models), so a
@@ -152,7 +152,7 @@ def names():
 @app.get("/api/index")
 def index():
     runs = layer_runs()
-    return {"model": "Qwen/Qwen3.5-4B", "arch": ARCH,
+    return {"model": MODEL, "arch": ARCH,
             "layers": {str(l): os.path.basename(p) for l, p in sorted(runs.items())}, "status": rt.status}
 
 
@@ -660,7 +660,7 @@ def act_range(layer, n):
 @app.get("/api/agent/overview")
 def agent_overview():
     runs = layer_runs()
-    return {"model": "Qwen/Qwen3.5-4B", "arch": ARCH, "layers_with_sweeps": sorted(runs),
+    return {"model": MODEL, "arch": ARCH, "layers_with_sweeps": sorted(runs),
             "named_neurons": len(names()), "live_model": not NO_MODEL}
 
 
@@ -744,6 +744,8 @@ async def agent_activations(req: Request):
     b = await req.json()
     if off := _live_off():
         return off
+    if "layer" not in b or "n" not in b:
+        return {"error": "activations needs {layer, n, text}; pass neurons: [{layer, n, dose, mode}] to push during the same pass"}
     # optional: other neurons pushed during the same pass, to test whether they drive this one
     # neurons: {layer, n, dose?, mode?}, or {layer, all: true, dose, mode: "mul"} for the whole layer's MLP;
     # heads: {layer, head (int or "all"), dose (a multiplier; 0 = ablate)}. Items with "head" in `neurons` count as heads.
